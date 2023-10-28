@@ -13,6 +13,13 @@ AS726X spectralSensor;
 
 // Sensor variables to hold most up-to-date reading
 int distanceTOF;
+int strengthRed;
+int strengthBlue = 0;
+
+// Spectral sensor settings
+uint8_t gain = 3;
+uint8_t measurementMode = 3;
+uint8_t integrationTime = 10;
 
 // Setup routine
 void setup(void)
@@ -20,12 +27,16 @@ void setup(void)
   Wire.begin();
   Serial.begin(115200);
   spectralSensor.begin();
+  spectralSensor.setGain(gain);
+  spectralSensor.setMeasurementMode(measurementMode);
+  spectralSensor.setIntegrationTime(integrationTime);
 
-  // if (distanceSensor.begin() != 0)
-  // {
-  //   Serial.println("TOF failed to begin. Please check wiring. Freezing...");
-  //   while (1);
-  // }
+
+  if (distanceSensor.begin() != 0)
+  {
+    Serial.println("TOF failed to begin. Please check wiring. Freezing...");
+    while (1);
+  }
   Serial.println("Sensors online!");
 
   u8g2.setBusClock(400000);
@@ -35,12 +46,6 @@ void setup(void)
 void loop(void)
 {
   readSensors();
-
-  Serial.print("B[");
-  Serial.print(spectralSensor.getCalibratedBlue(), 2);
-  Serial.print("] R[");
-  Serial.print(spectralSensor.getCalibratedRed(), 2);
-  Serial.println("]");
 
   u8g2.firstPage();
   do{
@@ -66,19 +71,29 @@ void loop(void)
     u8g2.setFont(u8g2_font_amstrad_cpc_extended_8f);
     u8g2.setDrawColor(2);
     u8g2.drawStr(48, 32, String(distanceTOF).c_str());
+    u8g2.drawStr(48, 48, String(strengthRed).c_str());
+    u8g2.drawStr(48, 64, String(strengthBlue).c_str());
+
   }
   while(u8g2.nextPage());
 }
 
 void readSensors(void) {
   // Read time of flight sensor
-  // distanceSensor.startRanging(); //Write configuration bytes to initiate measurement
-  // while (!distanceSensor.checkForDataReady()) {
-  //   delay(1);
-  // }
-  // distanceTOF = distanceSensor.getDistance(); //Get the result of the measurement from the sensor
-  // distanceSensor.clearInterrupt();
-  // distanceSensor.stopRanging();
+  distanceSensor.startRanging(); //Write configuration bytes to initiate measurement
+  while (!distanceSensor.checkForDataReady()) {
+    delay(1);
+  }
+  distanceTOF = distanceSensor.getDistance(); //Get the result of the measurement from the sensor
+  distanceSensor.clearInterrupt();
+  distanceSensor.stopRanging();
 
   spectralSensor.takeMeasurements();
+  strengthRed = spectralSensor.getCalibratedRed();
+  strengthBlue = spectralSensor.getCalibratedOrange();
+  // Serial.print("B[");
+  // Serial.print(spectralSensor.getCalibratedBlue(), 2);
+  // Serial.print("] R[");
+  // Serial.print(spectralSensor.getCalibratedRed(), 2);
+  // Serial.println("]");
 }

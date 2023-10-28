@@ -23,7 +23,7 @@
 #include "AS726X.h"
 AS726X sensor;//Creates the sensor object
 byte GAIN = 0;
-byte MEASUREMENT_MODE = 0;
+byte MEASUREMENT_MODE = 1;
 
 void setup() {
   Wire.begin();
