@@ -49,30 +49,116 @@ void loop(void)
 
   u8g2.firstPage();
   do{
-    // Indicator bar for the front facing time of flight
+    // TIME OF FLIGHT INDICATORS
+    if (distanceTOF < 1500) {
+      u8g2.setDrawColor(1);
+      u8g2.drawBox(0, 0, 128, 5);
+    } else {
+      u8g2.setDrawColor(0);
+      u8g2.drawBox(0, 0, 128, 5); 
+    }
+    if (distanceTOF < 1250) {
+      u8g2.setDrawColor(1);
+      u8g2.drawBox(0, 9, 128, 5);
+    } else {
+      u8g2.setDrawColor(0);
+      u8g2.drawBox(0, 9, 128, 5);
+    }
     if (distanceTOF < 1000) {
       u8g2.setDrawColor(1);
-      u8g2.drawBox(0, 0, 128, 19);
+      u8g2.drawBox(0, 18, 128, 5);
     } else {
       u8g2.setDrawColor(0);
-      u8g2.drawBox(0, 0, 128, 19);
+      u8g2.drawBox(0, 18, 128, 5);
+    }
+    if (distanceTOF < 750) {
+      u8g2.setDrawColor(1);
+      u8g2.drawBox(0, 27, 128, 5);
+    } else {
+      u8g2.setDrawColor(0);
+      u8g2.drawBox(0, 27, 128, 5);
     }
 
-    // Indicator bar for the front facing time of flight
-    if (distanceTOF < 1300) {
+    // RED LIGHT INDICATORS
+    if (strengthRed > 0) {
       u8g2.setDrawColor(1);
-      u8g2.drawBox(0, 76, 128, 19);
+      u8g2.drawBox(0, 91, 62, 5);
     } else {
       u8g2.setDrawColor(0);
-      u8g2.drawBox(0, 76, 128, 19);
+      u8g2.drawBox(0, 91, 62, 5);
+    }
+    if (strengthRed > 10) {
+      u8g2.setDrawColor(1);
+      u8g2.drawBox(0, 82, 62, 5);
+    } else {
+      u8g2.setDrawColor(0);
+      u8g2.drawBox(0, 82, 62, 5);
+    }
+    if (strengthRed > 50) {
+      u8g2.setDrawColor(1);
+      u8g2.drawBox(0, 73, 62, 5);
+    } else {
+      u8g2.setDrawColor(0);
+      u8g2.drawBox(0, 73, 62, 5);
+    }
+    if (strengthRed > 100) {
+      u8g2.setDrawColor(1);
+      u8g2.drawBox(0, 64, 62, 5);
+    } else {
+      u8g2.setDrawColor(0);
+      u8g2.drawBox(0, 64, 62, 5);
+    }
+    if (strengthRed > 200) {
+      u8g2.setDrawColor(1);
+      u8g2.drawBox(0, 55, 62, 5);
+    } else {
+      u8g2.setDrawColor(0);
+      u8g2.drawBox(0, 55, 62, 5);
+    }
+
+    // BLUE LIGHT INDICATORS
+    if (strengthBlue > 0) {
+      u8g2.setDrawColor(1);
+      u8g2.drawBox(66, 91, 62, 5);
+    } else {
+      u8g2.setDrawColor(0);
+      u8g2.drawBox(66, 91, 62, 5);
+    }
+    if (strengthBlue > 10) {
+      u8g2.setDrawColor(1);
+      u8g2.drawBox(66, 82, 62, 5);
+    } else {
+      u8g2.setDrawColor(0);
+      u8g2.drawBox(66, 82, 62, 5);
+    }
+    if (strengthBlue > 50) {
+      u8g2.setDrawColor(1);
+      u8g2.drawBox(66, 73, 62, 5);
+    } else {
+      u8g2.setDrawColor(0);
+      u8g2.drawBox(66, 73, 62, 5);
+    }
+    if (strengthBlue > 100) {
+      u8g2.setDrawColor(1);
+      u8g2.drawBox(66, 64, 62, 5);
+    } else {
+      u8g2.setDrawColor(0);
+      u8g2.drawBox(66, 64, 62, 5);
+    }
+    if (strengthBlue > 200) {
+      u8g2.setDrawColor(1);
+      u8g2.drawBox(66, 55, 62, 5);
+    } else {
+      u8g2.setDrawColor(0);
+      u8g2.drawBox(66, 55, 62, 5);
     }
 
     // Write the distances to the OLED display
     u8g2.setFont(u8g2_font_amstrad_cpc_extended_8f);
     u8g2.setDrawColor(2);
-    u8g2.drawStr(48, 32, String(distanceTOF).c_str());
-    u8g2.drawStr(48, 48, String(strengthRed).c_str());
-    u8g2.drawStr(48, 64, String(strengthBlue).c_str());
+    u8g2.drawStr(16, 48, String(strengthRed).c_str());
+    u8g2.drawStr(48, 48, String(distanceTOF).c_str());
+    u8g2.drawStr(96, 48, String(strengthBlue).c_str());
 
   }
   while(u8g2.nextPage());
@@ -90,10 +176,5 @@ void readSensors(void) {
 
   spectralSensor.takeMeasurements();
   strengthRed = spectralSensor.getCalibratedRed();
-  strengthBlue = spectralSensor.getCalibratedOrange();
-  // Serial.print("B[");
-  // Serial.print(spectralSensor.getCalibratedBlue(), 2);
-  // Serial.print("] R[");
-  // Serial.print(spectralSensor.getCalibratedRed(), 2);
-  // Serial.println("]");
+  strengthBlue = spectralSensor.getCalibratedViolet();
 }
