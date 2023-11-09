@@ -13,7 +13,7 @@ AS726X spectralSensor;
 
 // Sensor variables to hold most up-to-date reading
 int distanceTOF;
-int strengthRed;
+int strengthRed = 0;
 int strengthBlue = 0;
 
 // Spectral sensor settings
@@ -46,7 +46,6 @@ void setup(void)
 void loop(void)
 {
   readSensors();
-
   u8g2.firstPage();
   do{
     // TIME OF FLIGHT INDICATORS
@@ -176,5 +175,5 @@ void readSensors(void) {
 
   spectralSensor.takeMeasurements();
   strengthRed = spectralSensor.getCalibratedRed();
-  strengthBlue = spectralSensor.getCalibratedViolet();
+  strengthBlue = max(spectralSensor.getCalibratedViolet(), spectralSensor.getCalibratedGreen());
 }
